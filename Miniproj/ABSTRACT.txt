@@ -1,0 +1,17 @@
+In urban settings, transportation poses a significant challenge, often leading to 
+inefficiencies and increased costs for commuters. To address this issue, we propose 
+RideShare, a cab booking system that enables users traveling from one location to another 
+to share the cost of their journey with fellow travelers. This project aims to enhance 
+convenience, affordability, and sustainability in transportation by leveraging technology to 
+facilitate ridesharing among users. 
+RideShare will be developed using modern web development technologies and APIs. The 
+backend will be built using Django, a Python-based framework, coupled with PostgreSQL 
+for data storage. Authentication and authorization will be implemented to ensure secure 
+access to the platform. Mapping functionalities will be integrated using the Mapbox API to 
+enable users to specify pickup and drop-off locations accurately. Real-time communication 
+between users will be facilitated through ajax technology, allowing for seamless 
+coordination of ridesharing arrangements. 
+The implementation of RideShare will result in a user-friendly platform that empowers 
+users to find and offer rides conveniently. By enabling users to share the cost of their 
+journeys, RideShare will promote cost savings and reduce the environmental impact of 
+transportation. Real-time communication features will enhance user experience
