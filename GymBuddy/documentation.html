@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>GymBuddy API Documentation — Tester Guide</title>
+<style>
+  body{font-family:Inter, Arial, sans-serif;max-width:980px;margin:28px auto;color:#222;background:#fafafa}
+  h1,h2,h3{color:#1f3a57}
+  pre,code{background:#f6f8fa;border:1px solid #e1e4e8;padding:12px;border-radius:6px;overflow:auto}
+  table{width:100%;border-collapse:collapse;margin:14px 0;background:#fff}
+  th,td{border:1px solid #e6e9ed;padding:10px;text-align:left}
+  th{background:#f0f4f8}
+  .muted{color:#6b7280}
+  .ok{color:#137333;font-weight:700}
+  .err{color:#b91c1c;font-weight:700}
+  .endpoint{background:#eef6ff;padding:10px;border-left:4px solid #2b6cb0;border-radius:4px}
+  .curl{font-family:monospace}
+  .section{margin-bottom:28px}
+  footer{margin-top:40px;color:#6b7280;font-size:13px}
+  body::-webkit-scrollbar { width: 10px; }
+  body::-webkit-scrollbar-track { background: #ececec; }
+  body::-webkit-scrollbar-thumb { background: #bfbfbf; border-radius: 6px; }
+</style>
+</head>
+<body>
+<h1>GymBuddy — API Documentation</h1>
+
+<!-- ===================================================== -->
+<!-- 1. DATABASE SCHEMA -->
+<!-- ===================================================== -->
+<section class="section">
+  <h2>1. Database schema</h2>
+
+  <h3>workouts</h3>
+  <table>
+    <tr><th>column</th><th>type</th><th>notes</th></tr>
+    <tr><td>workout_id</td><td>SERIAL PRIMARY KEY</td><td>auto</td></tr>
+    <tr><td>workout_name</td><td>varchar(100) UNIQUE NOT NULL</td><td>e.g. chest</td></tr>
+  </table>
+
+  <h3>muscles</h3>
+  <table>
+    <tr><th>column</th><th>type</th><th>notes</th></tr>
+    <tr><td>muscle_id</td><td>SERIAL PRIMARY KEY</td><td>auto</td></tr>
+    <tr><td>workout_id</td><td>int REFERENCES workouts(workout_id)</td><td>FK</td></tr>
+    <tr><td>muscle_name</td><td>varchar(100) NOT NULL</td><td></td></tr>
+  </table>
+
+  <h3>exercises</h3>
+  <table>
+    <tr><th>column</th><th>type</th><th>notes</th></tr>
+    <tr><td>exercise_id</td><td>SERIAL PRIMARY KEY</td><td>auto</td></tr>
+    <tr><td>muscle_id</td><td>int REFERENCES muscles(muscle_id) ON DELETE CASCADE</td><td>FK</td></tr>
+    <tr><td>exercise_name</td><td>varchar(100)</td><td>unique per muscle</td></tr>
+    <tr><td>max_weight</td><td>float</td><td>&ge; 0</td></tr>
+    <tr><td>rep_count</td><td>int</td><td>&gt; 0</td></tr>
+  </table>
+</section>
+
+<!-- ===================================================== -->
+<!-- 2. SMART-CREATE -->
+<!-- ===================================================== -->
+<section class="section">
+  <h2>2. Smart-create behavior (tester rules)</h2>
+  <p>POST <code>/smart/exercise</code> behaves as follows:</p>
+
+  <ol style="line-height:1.9;">
+    <li>
+      <strong>Exercise exists:</strong>
+      If <span style="background:#eef2ff;padding:2px 6px;border-radius:4px;">exercise_name</span>
+      already exists → return existing
+      <span style="background:#eef2ff;padding:2px 6px;border-radius:4px;">exercise_id</span>
+      and <strong>do NOT insert</strong>.
+    </li>
+
+    <li>
+      <strong>Muscle exists, exercise missing:</strong>
+      Reuse
+      <span style="background:#eef2ff;padding:2px 6px;border-radius:4px;">muscle_id</span>,
+      insert only exercise.
+    </li>
+
+    <li>
+      <strong>Workout exists, muscle missing:</strong>
+      Reuse
+      <span style="background:#eef2ff;padding:2px 6px;border-radius:4px;">workout_id</span>,
+      insert muscle → exercise.
+    </li>
+
+    <li>
+      <strong>Workout missing:</strong>
+      Insert workout → muscle → exercise.
+    </li>
+  </ol>
+
+  <p class="muted">All steps must run inside a single transaction.</p>
+</section>
+
+<!-- ===================================================== -->
+<!-- 3. ENDPOINTS -->
+<!-- ===================================================== -->
+<section class="section">
+  <h2>3. Endpoints</h2>
+
+  <h3 class="endpoint">POST /</h3>
+  <pre>{
+  "workout_name":"chest",
+  "muscle_name":"upper chest",
+  "exercise_name":"incline bench press",
+  "max_weight":60,
+  "reps":10
+}</pre>
+<p><strong>Expected Status Codes:</strong></p>
+<ul>
+  <li>200 – Exercise already exists</li>
+  <li>201 – Created new exercise (and possibly muscle/workout)</li>
+  <li>400 – Validation failed</li>
+  <li>500 – Internal server error</li>
+</ul>
+
+  <table>
+    <tr><th>condition</th><th>http</th><th>response</th></tr>
+    <tr><td>exercise exists</td><td>200</td><td>{"exercise_id":1,"message":"exercise exists"}</td></tr>
+    <tr><td>created</td><td>201</td><td>{"exercise_id":41,"message":"created"}</td></tr>
+    <tr><td>bad input</td><td>400</td><td>{"error":"validation failed"}</td></tr>
+    <tr><td>server error</td><td>500</td><td>{"error":"internal error"}</td></tr>
+  </table>
+
+  <h3 class="endpoint">GET /</h3>
+  <pre>[
+  {
+    "exercise_id":1,
+    "exercise_name":"incline bench press",
+    "max_weight":60,
+    "rep_count":10,
+    "muscle_id":1,
+    "muscle_name":"upper chest",
+    "workout_id":1,
+    "workout_name":"chest"
+  }
+]</pre>
+<p><strong>Expected Status Codes:</strong></p>
+<ul>
+  <li>200 – Success</li>
+  <li>500 – Internal server error</li>
+</ul>
+
+  <h3 class="endpoint">GET /exercises</h3>
+  <pre>[
+  {
+    "exercise_id":1,
+    "exercise_name":"incline bench press",
+    "max_weight":60,
+    "rep_count":10,
+    "muscle_id":1,
+    "muscle_name":"upper chest",
+    "workout_id":1,
+    "workout_name":"chest"
+  }
+]</pre>
+<p><strong>Expected Status Codes:</strong></p>
+<ul>
+  <li>200 – Success</li>
+  <li>500 – Internal server error</li>
+</ul>
+
+
+  <h3 class="endpoint">GET /search_workouts/{name}</h3>
+  <pre>GET /workouts/chest</pre>
+
+  <h3 class="endpoint">PUT /exercises/{id}</h3>
+  <pre>{
+  "exercise_name":"flat bench press",
+  "muscle_id":2,
+  "max_weight":80,
+  "reps":8
+}</pre>
+<p><strong>Expected Status Codes:</strong></p>
+<ul>
+  <li>200 – Updated successfully</li>
+  <li>400 – Validation failed</li>
+  <li>404 – Exercise not found</li>
+  <li>500 – Internal server error</li>
+</ul>
+
+
+
+  <h3 class="endpoint">PATCH /exercises/{id}</h3>
+  <pre>{ "max_weight":55,
+  "reps":12
+}</pre>
+<p><strong>Expected Status Codes:</strong></p>
+<ul>
+  <li>200 – Updated successfully</li>
+  <li>400 – Validation failed</li>
+  <li>404 – Exercise not found</li>
+  <li>500 – Internal server error</li>
+</ul>
+
+
+
+  <h3 class="endpoint">DELETE /exercises/{id}</h3>
+<p><strong>Expected Status Codes:</strong></p>
+<ul>
+  <li>200 – Deleted successfully</li>
+  <li>404 – Exercise not found</li>
+  <li>500 – Internal server error</li>
+</ul>
+
+</section>
+
+
+<!-- ===================================================== -->
+<!-- 5. VALIDATION -->
+<!-- ===================================================== -->
+<section class="section">
+  <h2>5. Validation rules</h2>
+  <table>
+    <tr><th>field</th><th>rule</th></tr>
+    <tr><td>workout_name</td><td>required</td></tr>
+    <tr><td>muscle_name</td><td>required</td></tr>
+    <tr><td>exercise_name</td><td>required</td></tr>
+    <tr><td>max_weight</td><td>&ge; 0</td></tr>
+    <tr><td>reps</td><td>&gt; 0</td></tr>
+  </table>
+</section>
+</body>
+</html>

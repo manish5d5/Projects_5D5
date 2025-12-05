@@ -1,0 +1,156 @@
+[
+  {
+    "workout_for": "chest",
+    "muscle": "upper chest",
+    "exercise": "Incline Bench Press",
+    "max_weight": 40,
+    "reps": 10
+  }
+  {
+    "workout_for": "chest",
+    "muscle": "middle chest",
+    "exercise": "Flat Bench Press",
+    "max_weight": 50,
+    "reps": 8
+  }
+  {
+    "workout_for": "chest",
+    "muscle": "lower chest",
+    "exercise": "Decline Bench Press",
+    "max_weight": 45,
+    "reps": 10
+  }
+  {
+    "workout_for": "chest",
+    "muscle": "inner chest",
+    "exercise": "Cable Fly",
+    "max_weight": 12,
+    "reps": 15
+  }
+
+  {
+    "workout_for": "back",
+    "muscle": "lats",
+    "exercise": "Lat Pulldown",
+    "max_weight": 55,
+    "reps": 12
+  }
+  {
+    "workout_for": "back",
+    "muscle": "lats",
+    "exercise": "Seated Row",
+    "max_weight": 45,
+    "reps": 10
+  }
+  {
+    "workout_for": "back",
+    "muscle": "traps",
+    "exercise": "Barbell Shrug",
+    "max_weight": 60,
+    "reps": 12
+  }
+  {
+    "workout_for": "back",
+    "muscle": "rhomboids",
+    "exercise": "Face Pull",
+    "max_weight": 10,
+    "reps": 15
+  }
+
+  {
+    "workout_for": "legs",
+    "muscle": "quads",
+    "exercise": "Leg Press",
+    "max_weight": 120,
+    "reps": 10
+  }
+  {
+    "workout_for": "legs",
+    "muscle": "hamstrings",
+    "exercise": "Deadlift",
+    "max_weight": 80,
+       "reps": 6,
+    "workout_date": "2025-02-12"
+  }
+  {
+    "workout_for": "legs",
+    "muscle": "glutes",
+    "exercise": "Hip Thrust",
+    "max_weight": 60,
+    "reps": 12,
+    "workout_date": "2025-02-12"
+  }
+  {
+    "workout_for": "legs",
+    "muscle": "calves",
+    "exercise": "Standing Calf Raise",
+    "max_weight": 25,
+    "reps": 20,
+    "workout_date": "2025-02-12"
+  }
+
+  {
+    "workout_for": "shoulders",
+    "muscle": "front delts",
+    "exercise": "Front Raise",
+    "max_weight": 10,
+    "reps": 12,
+    "workout_date": "2025-02-12"
+  }
+  {
+    "workout_for": "shoulders",
+    "muscle": "side delts",
+    "exercise": "Lateral Raise",
+    "max_weight": 8,
+    "reps": 15,
+    "workout_date": "2025-02-12"
+  }
+  {
+    "workout_for": "shoulders",
+    "muscle": "rear delts",
+    "exercise": "Reverse Pec Deck",
+    "max_weight": 20,
+    "reps": 12,
+    "workout_date": "2025-02-12"
+  }
+  {
+    "workout_for": "shoulders",
+    "muscle": "overall",
+    "exercise": "Overhead Press",
+    "max_weight": 30,
+    "reps": 8,
+    "workout_date": "2025-02-12"
+  }
+
+  {
+    "workout_for": "arms",
+    "muscle": "biceps",
+    "exercise": "Dumbbell Curl",
+    "max_weight": 12,
+    "reps": 12,
+    "workout_date": "2025-02-12"
+  }
+  {
+    "workout_for": "arms",
+    "muscle": "biceps",
+    "exercise": "Hammer Curl",
+    "max_weight": 10,
+    "reps": 12,
+    "workout_date": "2025-02-12"
+  }
+  {
+    "workout_for": "arms",
+    "muscle": "triceps",
+    "exercise": "Skull Crusher",
+    "max_weight": 20,
+    "reps": 10,
+    "workout_date": "2025-02-12"
+  }
+  {
+    "workout_for": "arms",
+    "muscle": "triceps",
+    "exercise": "Cable Pushdown",
+    "max_weight": 15,
+    "reps": 15,
+    "workout_date": "2025-02-12"
+  }
